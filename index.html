@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>環保小幫手 - 減塑成就</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f0f7f4;
+            color: #2c3e50;
+            text-align: center;
+            padding: 50px 20px;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #27ae60;
+            font-size: 24px;
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            min-height: 50px;
+        }
+        button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>🌱 減塑新生活</h1>
+        <p id="display-text">太棒了！您又為地球減少了一個塑膠袋的負擔。</p>
+        <button onclick="speakMessage()">點擊聆聽鼓勵</button>
+    </div>
+
+    <script>
+        // 你的三種鼓勵語句
+        const messages = [
+            "此次購物未用塑膠袋，很棒的辣！讚讚",
+            "可惡，你怎麼這麼跟得上潮流，用了環保袋！",
+            "用了環保袋，今天一定有好心情的啦"
+        ];
+
+        function speakMessage() {
+            // 先停止先前還在播放的聲音（避免重複點擊重疊聲音）
+            window.speechSynthesis.cancel();
+
+            // 1. 隨機抽出其中一句
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            const selectedText = messages[randomIndex];
+
+            // 2. 更新網頁上的文字顯示
+            document.getElementById('display-text').innerText = selectedText;
+
+            // 3. 設定連續播放 3 次
+            for (let i = 0; i < 3; i++) {
+                const utterance = new SpeechSynthesisUtterance(selectedText);
+                utterance.lang = 'zh-TW'; // 設定繁體中文
+                utterance.rate = 1.0;   // 語速
+                utterance.pitch = 1.1;  // 音高（稍微拉高一點點聽起來更活潑）
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // 頁面載入後自動嘗試發聲
+        window.onload = function() {
+            setTimeout(speakMessage, 500);
+        };
+    </script>
+
+</body>
+</html>
