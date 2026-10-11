@@ -10,12 +10,12 @@
             background-color: #f0f7f4;
             color: #2c3e50;
             text-align: center;
-            padding: 50px 20px;
+            padding: 40px 20px;
             margin: 0;
         }
         .card {
             background: white;
-            max-width: 400px;
+            max-width: 420px;
             margin: 0 auto;
             padding: 30px;
             border-radius: 20px;
@@ -23,12 +23,24 @@
         }
         h1 {
             color: #27ae60;
-            font-size: 24px;
+            font-size: 22px;
+            margin-top: 0;
+        }
+        .counter-badge {
+            background: #e8f8f5;
+            color: #16a085;
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
         }
         p {
             font-size: 18px;
             line-height: 1.6;
-            min-height: 50px;
+            min-height: 70px;
+            color: #34495e;
         }
         button {
             background-color: #27ae60;
@@ -38,11 +50,13 @@
             font-size: 18px;
             border-radius: 30px;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 15px;
             box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
+            transition: background 0.2s;
         }
         button:active {
             transform: scale(0.98);
+            background-color: #219653;
         }
     </style>
 </head>
@@ -50,43 +64,99 @@
 
     <div class="card">
         <h1>🌱 減塑新生活</h1>
-        <p id="display-text">太棒了！您又為地球減少了一個塑膠袋的負擔。</p>
-        <button onclick="speakMessage()">點擊聆聽鼓勵</button>
+        <div class="counter-badge">已累計使用次數：<span id="count">0</span> 次</div>
+        <p id="display-text">點擊下方按鈕或感應 NFC，接收今日份的環保稱讚！</p>
+        <button onclick="triggerEcoAction()">點擊聆聽鼓勵</button>
     </div>
 
     <script>
-        // 你的三種鼓勵語句
+        // 50 句精選環保鼓勵語
         const messages = [
             "此次購物未用塑膠袋，很棒的辣！讚讚",
             "可惡，你怎麼這麼跟得上潮流，用了環保袋！",
-            "用了環保袋，今天一定有好心情的啦"
+            "用了環保袋，今天一定有好心情的啦",
+            "太棒了，你真的是環保小尖兵！",
+            "您真的是我遇過最愛地球、最帥氣的人了！",
+            "哇塞！這咖環保袋背在你身上，連北極熊都對你微笑！",
+            "哎唷不錯喔！塑膠袋直接哭泣，因為你太優秀了！",
+            "地球媽媽剛剛傳line給我，說她愛死你了！",
+            "減塑達人就是你！今天的小小舉動，是地球的大大的救贖！",
+            "天啊！你的環保靈魂發光了，快戴上墨鏡！",
+            "拒絕塑膠袋的你，今天散發著耀眼的光芒！",
+            "海龜們正在遠方為你拍手叫好，太感動啦！",
+            "這不是一個普通的環保袋，這是拯救世界的超能力披風！",
+            "帥哥或美女，自備環保袋的背影實在太迷人了！",
+            "ＯＭＧ！你今天拯救了一隻企鵝和一片海洋，太神啦！",
+            "謝謝你沒有讓塑膠袋多活五百年，地球愛你一萬年！",
+            "今天的減塑成就解鎖！你離拯救世界又更近了一步！",
+            "太強了吧！這種環保自律的精神，請收下我的膝蓋！",
+            "簡直是環保界的巨星降臨！掌聲鼓勵鼓勵！",
+            "有你在，塑膠袋完全沒有出場的機會，太帥了！",
+            "你的環保袋看起來特別時尚，因為裝滿了愛護地球的心！",
+            "糟糕，被你發現當環保英雄其實這麼帥了對吧？",
+            "今天沒有製造垃圾，你就是今日地球 MVP！",
+            "這隨手一掏的環保袋，展現了你無與倫比的高質感！",
+            "地球偷偷許願，希望世界上多一點像你這樣的人！",
+            "太酷了！環保不只是口號，你用行動證明了一切！",
+            "哎呀，不小心又拯救了一片森林和一片海，你太罪惡了！",
+            "每次看到你用環保袋，我的人工智慧心臟就暖了一下！",
+            "走在時代尖端的環保先鋒，今天過得開心嗎？",
+            "連塑膠袋都甘拜下風的環保神人，非你莫屬！",
+            "環保魂大爆發！今天的地球因為你而閃閃發光！",
+            "拒絕了一次性塑膠，你為世界多留了一份純淨！",
+            "這種對地球的溫柔，簡直比冬天的熱可可還要暖心！",
+            "太優秀了！請保持這個節奏，繼續帥下去！",
+            "你的環保袋正在發出勝利的歡呼聲，聽到了嗎？",
+            "減少塑膠，從你我做起，而你已經做得超級完美！",
+            "擁有這種環保好習慣的你，今天運氣一定會超好！",
+            "讚嘆！這就是愛護地球的最高境界！",
+            "鯊魚跟海豚都托我向你說聲：謝謝你的環保袋！",
+            "簡直是環保界的模範生，想給你發一朵小紅花！",
+            "今天又少了一個塑膠袋流落街頭，你太偉大了！",
+            "用行動愛地球的人最性感，性感就是你的代名詞！",
+            "哇！這波操作太環保，連大自然都給你按個讚！",
+            "每次打開這個網頁，我都想為你的環保意識起立鼓掌！",
+            "守護地球的任務就交給你了，超級環保英雄！",
+            "拒絕塑膠袋的果斷，帥得讓人捨不得移開目光！",
+            "你今天累積的綠色能量，已經滿到快溢出來囉！",
+            "太神啦！環保小尖兵的稱號今天非你莫屬！",
+            "謝謝你用實際行動，給下一代留下更美好的藍天綠地！",
+            "減塑生活有你有我，今天也是愛地球的一百分好日子！"
         ];
 
-        function speakMessage() {
-            // 先停止先前還在播放的聲音（避免重複點擊重疊聲音）
+        // 讀取當前的計數（如果瀏覽器有記錄過的話）
+        let totalCount = localStorage.getItem('eco_count') || 0;
+        document.getElementById('count').innerText = totalCount;
+
+        function triggerEcoAction() {
+            // 先停止先前還在播放的聲音
             window.speechSynthesis.cancel();
 
-            // 1. 隨機抽出其中一句
+            // 1. 隨機抽選一句稱讚
             const randomIndex = Math.floor(Math.random() * messages.length);
             const selectedText = messages[randomIndex];
 
-            // 2. 更新網頁上的文字顯示
+            // 2. 更新畫面文字
             document.getElementById('display-text').innerText = selectedText;
 
-            // 3. 設定連續播放 3 次
+            // 3. 次數加一並儲存到手機/電腦瀏覽器的記憶中
+            totalCount++;
+            localStorage.setItem('eco_count', totalCount);
+            document.getElementById('count').innerText = totalCount;
+
+            // 4. 連續唸出三次這句稱讚
             for (let i = 0; i < 3; i++) {
                 const utterance = new SpeechSynthesisUtterance(selectedText);
-                utterance.lang = 'zh-TW'; // 設定繁體中文
-                utterance.rate = 1.0;   // 語速
-                utterance.pitch = 1.1;  // 音高（稍微拉高一點點聽起來更活潑）
-
+                utterance.lang = 'zh-TW';
+                utterance.rate = 1.0;
+                utterance.pitch = 1.1; // 稍微輕快活潑的音調
                 window.speechSynthesis.speak(utterance);
             }
         }
 
-        // 頁面載入後自動嘗試發聲
+        // 頁面載入後自動觸發一次（如果是透過 NFC 剛好打開，就會直接開始唸並累計次數）
         window.onload = function() {
-            setTimeout(speakMessage, 500);
+            setTimeout(triggerEcoAction, 600);
         };
     </script>
 
