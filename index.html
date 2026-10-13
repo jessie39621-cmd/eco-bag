@@ -226,7 +226,7 @@
 
     // 4. 判斷是否為第一次感應
     if (!localStorage.getItem(storageKey)) {
-      currentText = "第一次使用我也，接下來也請繼續使用我喔，我的乖乖。";
+      currentText = "第一次使用我呢，接下來也請繼續使用我喔，我的乖乖。";
       localStorage.setItem(storageKey, 'true');
     } else {
       const randomIndex = Math.floor(Math.random() * slogans.length);
